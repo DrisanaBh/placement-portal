@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11822.322 stable
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlacementPortalAPI", "PlacementPortalAPI.csproj", "{B5CD1A72-9E86-5841-45F4-67A087487315}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5CD1A72-9E86-5841-45F4-67A087487315}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5CD1A72-9E86-5841-45F4-67A087487315}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5CD1A72-9E86-5841-45F4-67A087487315}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5CD1A72-9E86-5841-45F4-67A087487315}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F0286688-14A8-4130-9D70-C266D1CA16C5}
+	EndGlobalSection
+EndGlobal
