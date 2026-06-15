@@ -3,29 +3,55 @@ import { useEffect, useState } from "react";
 function StudentProfile({ studentId, onBack }) {
     const [student, setStudent] = useState(null);
     const [applications, setApplications] = useState([]);
-    const [recommendations, setRecommendations] = useState([]);
+    const [resolvedStudentId, setResolvedStudentId] =
+        useState(studentId);
 
     useEffect(() => {
-        fetch(`http://localhost:5220/api/students/${studentId}`)
+        if (studentId) {
+            setResolvedStudentId(studentId);
+            return;
+        }
+
+        const user = JSON.parse(
+            localStorage.getItem("user")
+        );
+
+        fetch(
+            `http://localhost:5220/api/student/by-name/${encodeURIComponent(
+                user.fullName
+            )}`
+        )
+            .then((res) => res.json())
+            .then((data) => {
+                setResolvedStudentId(data.studentID);
+            });
+    }, [studentId]);
+
+    useEffect(() => {
+        if (!resolvedStudentId) return;
+
+        fetch(
+            `http://localhost:5220/api/students/${resolvedStudentId}`
+        )
             .then((res) => res.json())
             .then((data) => setStudent(data));
 
-        fetch("http://localhost:5220/api/applications")
+        fetch(
+            "http://localhost:5220/api/applications"
+        )
             .then((res) => res.json())
             .then((data) =>
                 setApplications(
                     data.filter(
-                        (app) => app.studentID === Number(studentId)
+                        (app) =>
+                            app.studentID ===
+                            Number(resolvedStudentId)
                     )
                 )
             );
 
-        fetch(
-            `http://localhost:5220/api/recommendations/${studentId}`
-        )
-            .then((res) => res.json())
-            .then((data) => setRecommendations(data));
-    }, [studentId]);
+       
+    }, [resolvedStudentId]);
 
     if (!student) {
         return <h2>Loading...</h2>;
@@ -41,9 +67,14 @@ function StudentProfile({ studentId, onBack }) {
 
     return (
         <div>
-            <button className="back-btn" onClick={onBack}>
-                ← Back
-            </button>
+            {onBack && (
+                <button
+                    className="back-btn"
+                    onClick={onBack}
+                >
+                    ← Back
+                </button>
+            )}
 
             <div className="profile-card">
                 <h1>{student.fullName}</h1>
@@ -83,57 +114,7 @@ function StudentProfile({ studentId, onBack }) {
                 </div>
             </div>
 
-            <div className="table-card">
-                <h2 style={{ padding: "20px" }}>
-                    Applications
-                </h2>
-
-                <table className="data-table">
-                    <thead>
-                        <tr>
-                            <th>Company</th>
-                            <th>Job</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {applications.map((app, index) => (
-                            <tr key={index}>
-                                <td>{app.companyName}</td>
-                                <td>{app.jobTitle}</td>
-                                <td>{app.status}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            <div className="table-card">
-                <h2 style={{ padding: "20px" }}>
-                    Recommended Jobs
-                </h2>
-
-                <table className="data-table">
-                    <thead>
-                        <tr>
-                            <th>Job Title</th>
-                            <th>Company</th>
-                            <th>Matching Skills</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {recommendations.map((job) => (
-                            <tr key={job.jobID}>
-                                <td>{job.jobTitle}</td>
-                                <td>{job.companyName}</td>
-                                <td>⭐ {job.matchingSkills}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
+            
         </div>
     );
 }

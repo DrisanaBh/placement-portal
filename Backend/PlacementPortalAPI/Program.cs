@@ -126,6 +126,19 @@ async (int studentId, PlacementPortalContext db) =>
 
     return await recommendations.ToListAsync();
 });
+app.MapGet("/api/student/by-name/{name}", async (
+    string name,
+    PlacementPortalContext db) =>
+{
+    var student = await db.StudentDetails
+        .FirstOrDefaultAsync(
+            s => s.FullName == name
+        );
+
+    return student is null
+        ? Results.NotFound()
+        : Results.Ok(student);
+});
 app.MapGet("/api/dashboard/students/count",
 async (PlacementPortalContext db) =>
 {

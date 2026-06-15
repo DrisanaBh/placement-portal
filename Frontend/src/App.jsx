@@ -1,3 +1,5 @@
+import StudentRecommendations from "./StudentRecommendations";
+import StudentProfile from "./StudentProfile";
 import MenteeDetails from "./MenteeDetails";
 import Login from "./Login";
 import Faculty from "./Faculty";
@@ -34,9 +36,19 @@ ChartJS.register(
 );
 
 function App() {
-    const [currentPage, setCurrentPage] = useState(
-        localStorage.getItem("currentPage") || "dashboard"
-    );
+    const [currentPage, setCurrentPage] = useState(() => {
+        const user = JSON.parse(
+            localStorage.getItem("user")
+        );
+
+        if (user?.role === "Student")
+            return "studentprofile";
+
+        return (
+            localStorage.getItem("currentPage") ||
+            "dashboard"
+        );
+    });
 
     const [students, setStudents] = useState(0);
     const [jobs, setJobs] = useState(0);
@@ -94,7 +106,11 @@ function App() {
 
                     if (loggedInUser.role === "Faculty") {
                         setCurrentPage("faculty");
-                    } else {
+                    }
+                    else if (loggedInUser.role === "Student") {
+                        setCurrentPage("studentprofile");
+                    }
+                    else {
                         setCurrentPage("dashboard");
                     }
                 }}
@@ -127,7 +143,36 @@ function App() {
                                     👥 Mentee Details
                                 </li>
                             </>
-                        ) : (
+                        )  : user.role === "Student" ? (
+                                <>
+                                    <li
+                                        className={
+                                            currentPage === "studentprofile"
+                                                ? "active"
+                                                : ""
+                                        }
+                                        onClick={() =>
+                                            setCurrentPage("studentprofile")
+                                        }
+                                    >
+                                        🎓 My Profile
+                                    </li>
+
+                                    <li
+                                        className={
+                                            currentPage === "studentrecommendations"
+                                                ? "active"
+                                                : ""
+                                        }
+                                        onClick={() =>
+                                            setCurrentPage(
+                                                "studentrecommendations"
+                                            )
+                                        }
+                                    >
+                                        💼 Job Recommendations
+                                    </li>
+                                </> ):(
                             <>
                                 <li
                                     className={currentPage === "dashboard" ? "active" : ""}
@@ -198,10 +243,12 @@ function App() {
                     </ul>
                 </div>
 
-                <div className="sidebar-footer">
-                    <p>Active Students</p>
-                    <h3>{students}</h3>
-                </div>
+                {user.role !== "Student" && (
+                    <div className="sidebar-footer">
+                        <p>Active Students</p>
+                        <h3>{students}</h3>
+                    </div>
+                )}
             </aside>
 
             <main className="content">
@@ -344,6 +391,12 @@ function App() {
                 )}
                 {currentPage === "recommendations" && (
                     <Recommendations />
+                )}
+                {currentPage === "studentprofile" && (
+                    <StudentProfile />
+                )}
+                {currentPage === "studentrecommendations" && (
+                    <StudentRecommendations />
                 )}
 
             </main>
