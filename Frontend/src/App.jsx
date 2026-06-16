@@ -1,3 +1,4 @@
+import StudentApplications from "./StudentApplications";
 import StudentRecommendations from "./StudentRecommendations";
 import StudentProfile from "./StudentProfile";
 import MenteeDetails from "./MenteeDetails";
@@ -156,6 +157,18 @@ function App() {
                                         }
                                     >
                                         🎓 My Profile
+                                    </li>
+                                    <li
+                                        className={
+                                            currentPage === "studentapplications"
+                                                ? "active"
+                                                : ""
+                                        }
+                                        onClick={() =>
+                                            setCurrentPage("studentapplications")
+                                        }
+                                    >
+                                        📝 My Applications
                                     </li>
 
                                     <li
@@ -394,6 +407,9 @@ function App() {
                 )}
                 {currentPage === "studentprofile" && (
                     <StudentProfile />
+                )}
+                {currentPage === "studentapplications" && (
+                    <StudentApplications />
                 )}
                 {currentPage === "studentrecommendations" && (
                     <StudentRecommendations />

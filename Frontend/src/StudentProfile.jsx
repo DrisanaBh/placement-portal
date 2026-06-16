@@ -113,6 +113,33 @@ function StudentProfile({ studentId, onBack }) {
                     <p>Offers</p>
                 </div>
             </div>
+            {studentId && (
+                <div className="table-card">
+                    <h2 style={{ padding: "20px" }}>
+                        Applications
+                    </h2>
+
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Job</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {applications.map((app, index) => (
+                                <tr key={index}>
+                                    <td>{app.companyName}</td>
+                                    <td>{app.jobTitle}</td>
+                                    <td>{app.status}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
 
             
         </div>
