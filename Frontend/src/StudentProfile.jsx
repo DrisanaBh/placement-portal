@@ -6,15 +6,15 @@ function StudentProfile({ studentId, onBack }) {
     const [resolvedStudentId, setResolvedStudentId] =
         useState(studentId);
 
+    const user = JSON.parse(
+        localStorage.getItem("user")
+    );
+
     useEffect(() => {
         if (studentId) {
             setResolvedStudentId(studentId);
             return;
         }
-
-        const user = JSON.parse(
-            localStorage.getItem("user")
-        );
 
         fetch(
             `http://localhost:5220/api/student/by-name/${encodeURIComponent(
@@ -49,8 +49,6 @@ function StudentProfile({ studentId, onBack }) {
                     )
                 )
             );
-
-       
     }, [resolvedStudentId]);
 
     if (!student) {
@@ -67,6 +65,12 @@ function StudentProfile({ studentId, onBack }) {
 
     return (
         <div>
+            {!studentId && (
+                <h1>
+                    Welcome Back, {user.fullName} 👋
+                </h1>
+            )}
+
             {onBack && (
                 <button
                     className="back-btn"
@@ -113,6 +117,7 @@ function StudentProfile({ studentId, onBack }) {
                     <p>Offers</p>
                 </div>
             </div>
+
             {studentId && (
                 <div className="table-card">
                     <h2 style={{ padding: "20px" }}>
@@ -140,8 +145,6 @@ function StudentProfile({ studentId, onBack }) {
                     </table>
                 </div>
             )}
-
-            
         </div>
     );
 }

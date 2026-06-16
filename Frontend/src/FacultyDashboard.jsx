@@ -2,12 +2,13 @@ import StudentProfile from "./StudentProfile";
 import { useEffect, useState } from "react";
 
 function FacultyDashboard() {
-    const [dashboard, setDashboard] = useState(null);
-    const [selectedStudent, setSelectedStudent] = useState(null);
-
     const user = JSON.parse(
         localStorage.getItem("user")
     );
+
+    const [dashboard, setDashboard] = useState(null);
+    const [selectedStudent, setSelectedStudent] =
+        useState(null);
 
     useEffect(() => {
         fetch(
@@ -21,7 +22,9 @@ function FacultyDashboard() {
         return (
             <StudentProfile
                 studentId={selectedStudent}
-                onBack={() => setSelectedStudent(null)}
+                onBack={() =>
+                    setSelectedStudent(null)
+                }
             />
         );
     }
@@ -30,22 +33,30 @@ function FacultyDashboard() {
         return <h2>Loading...</h2>;
     }
 
-    
-
     return (
         <div>
-            <h1>👨‍🏫 {dashboard.fullName}</h1>
+            <h1>
+                Welcome Back, {user.fullName} 👋
+            </h1>
+
+            <h2>
+                👨‍🏫 {dashboard.fullName}
+            </h2>
 
             <h3>{dashboard.department}</h3>
 
             <div className="cards">
                 <div className="card students-card">
-                    <h2>{dashboard.studentCount}</h2>
+                    <h2>
+                        {dashboard.studentCount}
+                    </h2>
                     <p>Students</p>
                 </div>
 
                 <div className="card jobs-card">
-                    <h2>{dashboard.offerCount}</h2>
+                    <h2>
+                        {dashboard.offerCount}
+                    </h2>
                     <p>Total Offers</p>
                 </div>
             </div>
@@ -64,28 +75,42 @@ function FacultyDashboard() {
                     <tbody>
                         <tr>
                             <td>Applied</td>
-                            <td>{dashboard.appliedCount}</td>
+                            <td>
+                                {
+                                    dashboard.appliedCount
+                                }
+                            </td>
                         </tr>
 
                         <tr>
                             <td>Interview</td>
-                            <td>{dashboard.interviewCount}</td>
+                            <td>
+                                {
+                                    dashboard.interviewCount
+                                }
+                            </td>
                         </tr>
 
                         <tr>
                             <td>Offer</td>
-                            <td>{dashboard.offerCount}</td>
+                            <td>
+                                {
+                                    dashboard.offerCount
+                                }
+                            </td>
                         </tr>
 
                         <tr>
                             <td>Rejected</td>
-                            <td>{dashboard.rejectedCount}</td>
+                            <td>
+                                {
+                                    dashboard.rejectedCount
+                                }
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-
-            
         </div>
     );
 }
