@@ -270,13 +270,13 @@ function App() {
                     <>
                         <div className="topbar">
                             <div>
-                                <h3>Welcome Back, Admin 👋</h3>
+                                <h3>Welcome Back, {user.fullName} 👋</h3>
                             </div>
 
                             <div className="topbar-right">
                                 <span>🔔 Notifications</span>
                                 <span>📅 June 2026</span>
-                                <span>👤 Admin</span>
+                                <span>👤 {user.fullName}</span>
                             </div>
                         </div>
 
