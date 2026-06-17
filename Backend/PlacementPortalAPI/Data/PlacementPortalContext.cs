@@ -18,7 +18,9 @@ public class PlacementPortalContext : DbContext
     public DbSet<JobSkill> JobSkills { get; set; }
     public DbSet<Faculty> Faculty { get; set; }
     public DbSet<User> Users { get; set; }
-    
+    public DbSet<UserTable> UserTables { get; set; }
+    public DbSet<StudentTable> StudentTables { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -45,5 +47,12 @@ public class PlacementPortalContext : DbContext
         modelBuilder.Entity<User>()
             .HasNoKey()
             .ToView("Users");
+        modelBuilder.Entity<UserTable>()
+    .ToTable("Users")
+    .HasKey(u => u.UserID);
+
+        modelBuilder.Entity<StudentTable>()
+            .ToTable("Students")
+            .HasKey(s => s.StudentID);
     }
 }

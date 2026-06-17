@@ -71,6 +71,34 @@ app.MapGet("/api/students/{id}",
             ? Results.Ok(student)
             : Results.NotFound();
     });
+app.MapPut("/api/students/{id}",
+async (
+    int id,
+    UpdateStudentRequest request,
+    PlacementPortalContext db
+) =>
+{
+    var student = await db.StudentTables
+        .FirstOrDefaultAsync(
+            s => s.StudentID == id
+        );
+
+    if (student == null)
+    {
+        return Results.NotFound();
+    }
+
+    student.CGPA = request.CGPA;
+    student.GraduationYear =
+        request.GraduationYear;
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(new
+    {
+        Message = "Profile updated"
+    });
+});
 app.MapGet("/api/jobs/{id}",
     async (int id, PlacementPortalContext db) =>
     {
@@ -212,6 +240,58 @@ async (int id, PlacementPortalContext db) =>
         Students = students
     });
 });
+app.MapPost("/api/register",
+async (RegisterRequest request,
+       PlacementPortalContext db) =>
+{
+    var existingUser = await db.UserTables
+        .FirstOrDefaultAsync(u =>
+            u.Email == request.Email);
+
+    if (existingUser != null)
+    {
+        return Results.BadRequest(
+            "Email already exists");
+    }
+
+    var faculty = await db.Faculty
+        .FirstOrDefaultAsync(f =>
+            f.Department == request.Department);
+
+    if (faculty == null)
+    {
+        return Results.BadRequest(
+            "No faculty found for department");
+    }
+
+    var user = new UserTable
+    {
+        FullName = request.FullName,
+        Email = request.Email,
+        PasswordHash = request.Password,
+        Role = "Student"
+    };
+
+    db.UserTables.Add(user);
+    await db.SaveChangesAsync();
+
+    var student = new StudentTable
+    {
+        UserID = user.UserID,
+        FacultyID = faculty.FacultyID,
+        Department = request.Department,
+        CGPA = request.CGPA,
+        GraduationYear = request.GraduationYear
+    };
+
+    db.StudentTables.Add(student);
+    await db.SaveChangesAsync();
+
+    return Results.Ok(new
+    {
+        Message = "Registration successful"
+    });
+});
 app.MapPost("/api/login",
 async (LoginRequest request, PlacementPortalContext db) =>
 {
@@ -243,6 +323,7 @@ async (LoginRequest request, PlacementPortalContext db) =>
         FacultyID = facultyId
     });
 });
+
 app.MapGet("/api/faculty/{id}/dashboard",
 async (int id, PlacementPortalContext db) =>
 {
