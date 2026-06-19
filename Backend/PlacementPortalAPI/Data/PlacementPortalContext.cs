@@ -20,6 +20,8 @@ public class PlacementPortalContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<UserTable> UserTables { get; set; }
     public DbSet<StudentTable> StudentTables { get; set; }
+    public DbSet<StudentSkillTable> StudentSkillTables { get; set; }
+    public DbSet<ApplicationTable> ApplicationTables { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -54,5 +56,11 @@ public class PlacementPortalContext : DbContext
         modelBuilder.Entity<StudentTable>()
             .ToTable("Students")
             .HasKey(s => s.StudentID);
+        modelBuilder.Entity<StudentSkillTable>()
+    .ToTable("StudentSkills")
+    .HasKey(s => s.SkillID);
+        modelBuilder.Entity<ApplicationTable>()
+        .ToTable("Applications")
+        .HasKey(a => a.ApplicationID);
     }
 }

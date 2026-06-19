@@ -203,6 +203,24 @@ app.MapGet("/api/faculty",
 
         return await faculty.ToListAsync();
     });
+app.MapPost("/api/apply",
+async (
+    ApplicationTable application,
+    PlacementPortalContext db
+) =>
+{
+    application.AppliedDate = DateTime.Now;
+    application.Status = "Applied";
+
+    db.ApplicationTables.Add(application);
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(new
+    {
+        Message = "Application submitted"
+    });
+});
 app.MapGet("/api/faculty/{id}",
 async (int id, PlacementPortalContext db) =>
 {
@@ -322,6 +340,59 @@ async (LoginRequest request, PlacementPortalContext db) =>
         user.Role,
         FacultyID = facultyId
     });
+});
+app.MapGet("/api/students/{id}/skills",
+async (int id, PlacementPortalContext db) =>
+{
+    var skills = await db.StudentSkills
+        .Where(s => s.StudentID == id)
+        .ToListAsync();
+
+    return Results.Ok(skills);
+});
+app.MapPost("/api/students/{id}/skills",
+async (
+    int id,
+    StudentSkillTable skill,
+    PlacementPortalContext db
+) =>
+{
+    var newSkill = new StudentSkillTable
+    {
+        StudentID = id,
+        SkillName = skill.SkillName
+    };
+
+    db.StudentSkillTables.Add(newSkill);
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(newSkill);
+});
+app.MapDelete("/api/students/{id}/skills/{skillId}",
+async (
+    int id,
+    int skillId,
+    PlacementPortalContext db
+) =>
+{
+    var skill = await db.StudentSkillTables
+        .FirstOrDefaultAsync(
+            s =>
+                s.SkillID == skillId &&
+                s.StudentID == id
+        );
+
+    if (skill == null)
+    {
+        return Results.NotFound();
+    }
+
+    db.StudentSkillTables.Remove(skill);
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok();
 });
 
 app.MapGet("/api/faculty/{id}/dashboard",
