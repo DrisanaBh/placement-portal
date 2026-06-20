@@ -59,8 +59,28 @@ app.MapGet("/api/jobs",
     async (PlacementPortalContext db) =>
         await db.Jobs.ToListAsync());
 app.MapGet("/api/applications",
-    async (PlacementPortalContext db) =>
-        await db.ApplicationTrackers.ToListAsync());
+async (PlacementPortalContext db) =>
+{
+    var applications =
+        from a in db.ApplicationTables
+        join s in db.StudentDetails
+            on a.StudentID equals s.StudentID
+        join j in db.Jobs
+            on a.JobID equals j.JobID
+        select new
+        {
+            a.ApplicationID,
+            a.StudentID,
+            a.JobID,
+            s.FullName,
+            j.CompanyName,
+            j.JobTitle,
+            a.Status,
+            a.AppliedDate
+        };
+
+    return await applications.ToListAsync();
+});
 app.MapGet("/api/students/{id}",
     async (int id, PlacementPortalContext db) =>
     {
@@ -209,6 +229,20 @@ async (
     PlacementPortalContext db
 ) =>
 {
+    var existingApplication =
+        await db.ApplicationTables
+            .FirstOrDefaultAsync(a =>
+                a.StudentID == application.StudentID &&
+                a.JobID == application.JobID);
+
+    if (existingApplication != null)
+    {
+        return Results.BadRequest(new
+        {
+            Message = "You have already applied for this job"
+        });
+    }
+
     application.AppliedDate = DateTime.Now;
     application.Status = "Applied";
 
@@ -221,6 +255,34 @@ async (
         Message = "Application submitted"
     });
 });
+app.MapPut(
+    "/api/applications/{applicationId}/status",
+    async (
+        int applicationId,
+        UpdateApplicationStatusRequest request,
+        PlacementPortalContext db
+    ) =>
+    {
+        var application =
+            await db.ApplicationTables.FindAsync(applicationId);
+
+        if (application == null)
+        {
+            return Results.NotFound(new
+            {
+                Message = "Application not found"
+            });
+        }
+
+        application.Status = request.Status;
+
+        await db.SaveChangesAsync();
+
+        return Results.Ok(new
+        {
+            Message = "Status updated successfully"
+        });
+    });
 app.MapGet("/api/faculty/{id}",
 async (int id, PlacementPortalContext db) =>
 {
