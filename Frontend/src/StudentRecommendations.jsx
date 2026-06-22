@@ -4,6 +4,9 @@ function StudentRecommendations() {
     const [recommendations, setRecommendations] =
         useState([]);
 
+    const [studentId, setStudentId] =
+        useState(null);
+
     useEffect(() => {
         const user = JSON.parse(
             localStorage.getItem("user")
@@ -16,6 +19,7 @@ function StudentRecommendations() {
         )
             .then((res) => res.json())
             .then((student) => {
+                setStudentId(student.studentID);
                 fetch(
                     `http://localhost:5220/api/recommendations/${student.studentID}`
                 )
@@ -26,6 +30,26 @@ function StudentRecommendations() {
             });
     }, []);
 
+    const applyForJob = async (jobId) => {
+        const response = await fetch(
+            "http://localhost:5220/api/apply",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    studentID: studentId,
+                    jobID: jobId
+                })
+            }
+        );
+
+        if (response.ok) {
+            alert("Application submitted!");
+        }
+    };
     return (
         <div className="table-card">
             <h2 style={{ padding: "20px" }}>
@@ -38,6 +62,7 @@ function StudentRecommendations() {
                         <th>Job Title</th>
                         <th>Company</th>
                         <th>Matching Skills</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
 
@@ -48,6 +73,16 @@ function StudentRecommendations() {
                             <td>{job.companyName}</td>
                             <td>
                                 ⭐ {job.matchingSkills}
+                            </td>
+
+                            <td>
+                                <button
+                                    onClick={() =>
+                                        applyForJob(job.jobID)
+                                    }
+                                >
+                                    Apply
+                                </button>
                             </td>
                         </tr>
                     ))}

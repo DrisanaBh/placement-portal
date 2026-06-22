@@ -9,6 +9,8 @@ function FacultyDashboard() {
     const [dashboard, setDashboard] = useState(null);
     const [selectedStudent, setSelectedStudent] =
         useState(null);
+    const [applications, setApplications] =
+        useState([]);
 
     useEffect(() => {
         fetch(
@@ -16,8 +18,45 @@ function FacultyDashboard() {
         )
             .then((res) => res.json())
             .then((data) => setDashboard(data));
+        fetch(
+            "http://localhost:5220/api/applications"
+        )
+            .then((res) => res.json())
+            .then((data) =>
+                setApplications(data)
+            );
     }, []);
 
+    const updateStatus = async (
+        applicationId,
+        status
+    ) => {
+        await fetch(
+            `http://localhost:5220/api/applications/${applicationId}/status`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+                body: JSON.stringify({
+                    status
+                })
+            }
+        );
+
+        setApplications(
+            applications.map((app) =>
+                app.applicationID ===
+                    applicationId
+                    ? {
+                        ...app,
+                        status
+                    }
+                    : app
+            )
+        );
+    };
     if (selectedStudent) {
         return (
             <StudentProfile
@@ -33,6 +72,7 @@ function FacultyDashboard() {
         return <h2>Loading...</h2>;
     }
 
+    console.log(applications);
     return (
         <div>
             <h1>
@@ -110,6 +150,71 @@ function FacultyDashboard() {
                         </tr>
                     </tbody>
                 </table>
+                <div className="table-card">
+                    <h2>Application Management</h2>
+
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>Application ID</th>
+                                <th>Student ID</th>
+                                <th>Job ID</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {applications.map((app) => (
+                                <tr
+                                    key={app.applicationID}
+                                >
+                                    <td>
+                                        {app.applicationID}
+                                    </td>
+
+                                    <td>
+                                        {app.studentID}
+                                    </td>
+
+                                    <td>
+                                        {app.jobID}
+                                    </td>
+
+                                    <td>
+                                        <select
+                                            value={
+                                                app.status
+                                            }
+                                            onChange={(e) =>
+                                                updateStatus(
+                                                    app.applicationID,
+                                                    e.target
+                                                        .value
+                                                )
+                                            }
+                                        >
+                                            <option>
+                                                Applied
+                                            </option>
+
+                                            <option>
+                                                Interview
+                                            </option>
+
+                                            <option>
+                                                Offer
+                                            </option>
+
+                                            <option>
+                                                Rejected
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

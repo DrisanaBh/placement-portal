@@ -1,3 +1,4 @@
+import Notifications from "./Notifications";
 import StudentApplications from "./StudentApplications";
 import StudentRecommendations from "./StudentRecommendations";
 import StudentProfile from "./StudentProfile";
@@ -184,6 +185,18 @@ function App() {
                                         }
                                     >
                                         💼 Job Recommendations
+                                    </li>
+                                    <li
+                                        className={
+                                            currentPage === "notifications"
+                                                ? "active"
+                                                : ""
+                                        }
+                                        onClick={() =>
+                                            setCurrentPage("notifications")
+                                        }
+                                    >
+                                        🔔 Notifications
                                     </li>
                                 </> ):(
                             <>
@@ -413,6 +426,9 @@ function App() {
                 )}
                 {currentPage === "studentrecommendations" && (
                     <StudentRecommendations />
+                )}
+                {currentPage === "notifications" && (
+                    <Notifications />
                 )}
 
             </main>
