@@ -456,6 +456,99 @@ async (
 
     return Results.Ok();
 });
+app.MapGet(
+    "/api/notifications/{userId}",
+    async (
+        int userId,
+        PlacementPortalContext db
+    ) =>
+    {
+        return await db.Notifications
+            .Where(n => n.UserID == userId)
+            .OrderByDescending(n => n.CreatedDate)
+            .ToListAsync();
+    });
+app.MapPost("/api/upload-resume",
+async (
+    IFormFile file,
+    int studentId,
+    PlacementPortalContext db
+) =>
+{
+    if (file == null || file.Length == 0)
+    {
+        return Results.BadRequest(
+            "No file uploaded"
+        );
+    }
+
+    var uploadsFolder =
+        Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "Uploads"
+        );
+
+    if (!Directory.Exists(uploadsFolder))
+    {
+        Directory.CreateDirectory(
+            uploadsFolder
+        );
+    }
+
+    var fileName =
+        $"{studentId}_{file.FileName}";
+
+    var filePath =
+        Path.Combine(
+            uploadsFolder,
+            fileName
+        );
+
+    using (var stream =
+        new FileStream(
+            filePath,
+            FileMode.Create
+        ))
+    {
+        await file.CopyToAsync(stream);
+    }
+
+    var resume = new Resume
+    {
+        StudentID = studentId,
+        FileName = file.FileName,
+        FilePath = filePath,
+        UploadDate = DateTime.Now,
+        FileSizeKB =
+            (int)(file.Length / 1024)
+    };
+
+    db.Resumes.Add(resume);
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(new
+    {
+        Message = "Resume uploaded successfully"
+    });
+})
+.DisableAntiforgery();
+app.MapGet("/api/resume/{studentId}",
+async (int studentId, PlacementPortalContext db) =>
+{
+    var resume =
+        await db.Resumes
+            .Where(r => r.StudentID == studentId)
+            .OrderByDescending(r => r.UploadDate)
+            .FirstOrDefaultAsync();
+
+    if (resume == null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(resume);
+});
 
 app.MapGet("/api/faculty/{id}/dashboard",
 async (int id, PlacementPortalContext db) =>

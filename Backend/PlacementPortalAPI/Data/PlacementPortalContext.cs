@@ -22,6 +22,8 @@ public class PlacementPortalContext : DbContext
     public DbSet<StudentTable> StudentTables { get; set; }
     public DbSet<StudentSkillTable> StudentSkillTables { get; set; }
     public DbSet<ApplicationTable> ApplicationTables { get; set; }
+    public DbSet<Notification> Notifications { get; set; }
+    public DbSet<Resume> Resumes { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
