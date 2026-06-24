@@ -615,6 +615,62 @@ async (int id, PlacementPortalContext db) =>
         })
     });
 });
+app.MapGet("/api/resume/download/{studentId}",
+async (int studentId, PlacementPortalContext db) =>
+{
+    var resume =
+        await db.Resumes
+            .Where(r => r.StudentID == studentId)
+            .OrderByDescending(r => r.UploadDate)
+            .FirstOrDefaultAsync();
+
+    if (resume == null)
+    {
+        return Results.NotFound(
+            "Resume not found"
+        );
+    }
+
+    var fileBytes =
+        await File.ReadAllBytesAsync(
+            resume.FilePath
+        );
+
+    return Results.File(
+        fileBytes,
+        "application/pdf",
+        resume.FileName
+    );
+});
+app.MapDelete("/api/resume/{studentId}",
+async (int studentId, PlacementPortalContext db) =>
+{
+    var resume =
+        await db.Resumes
+            .FirstOrDefaultAsync(r =>
+                r.StudentID == studentId);
+
+    if (resume == null)
+    {
+        return Results.NotFound(
+            "Resume not found"
+        );
+    }
+
+    if (File.Exists(resume.FilePath))
+    {
+        File.Delete(resume.FilePath);
+    }
+
+    db.Resumes.Remove(resume);
+
+    await db.SaveChangesAsync();
+
+    return Results.Ok(new
+    {
+        Message = "Resume deleted successfully"
+    });
+});
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
