@@ -276,6 +276,30 @@ app.MapPut(
 
         application.Status = request.Status;
 
+        var student =
+            await db.StudentTables
+                .FirstOrDefaultAsync(
+                    s => s.StudentID == application.StudentID
+                );
+
+        if (student != null)
+        {
+            var job =
+    await db.Jobs
+        .FirstOrDefaultAsync(
+            j => j.JobID == application.JobID
+        );
+            var notification = new Notification
+            {
+                UserID = student.UserID,
+                Message =
+                    $"Your application for {job?.JobTitle} at {job?.CompanyName} has moved to {request.Status} stage.",
+                CreatedDate = DateTime.Now
+            };
+
+            db.Notifications.Add(notification);
+        }
+
         await db.SaveChangesAsync();
 
         return Results.Ok(new
