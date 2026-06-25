@@ -481,6 +481,31 @@ async (
             "No file uploaded"
         );
     }
+    var existingResume =
+    await db.Resumes
+        .FirstOrDefaultAsync(
+            r => r.StudentID == studentId
+        );
+
+    if (existingResume != null)
+    {
+        if (
+            File.Exists(
+                existingResume.FilePath
+            )
+        )
+        {
+            File.Delete(
+                existingResume.FilePath
+            );
+        }
+
+        db.Resumes.Remove(
+            existingResume
+        );
+
+        await db.SaveChangesAsync();
+    }
 
     var uploadsFolder =
         Path.Combine(
