@@ -281,6 +281,11 @@ app.MapPut(
                 .FirstOrDefaultAsync(
                     s => s.StudentID == application.StudentID
                 );
+        var studentUser =
+    await db.Users
+        .FirstOrDefaultAsync(
+            u => u.UserID == student.UserID
+        );
 
         if (student != null)
         {
@@ -298,6 +303,25 @@ app.MapPut(
             };
 
             db.Notifications.Add(notification);
+            if (request.Status == "Offer")
+            {
+                var adminUsers =
+                    await db.Users
+                        .Where(u => u.Role == "Admin")
+                        .ToListAsync();
+
+                foreach (var admin in adminUsers)
+                {
+                    db.Notifications.Add(
+                        new Notification
+                        {
+                            UserID = admin.UserID,
+                            Message =
+                                $"{studentUser?.FullName} received an Offer for {job?.JobTitle} at {job?.CompanyName}.",
+                            CreatedDate = DateTime.Now
+                        });
+                }
+            }
         }
 
         await db.SaveChangesAsync();
