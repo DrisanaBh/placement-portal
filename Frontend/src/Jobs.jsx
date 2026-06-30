@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import {
+    FaBriefcase,
+} from "react-icons/fa6";
+
 
 function Jobs() {
     const [jobs, setJobs] = useState([]);
@@ -11,7 +15,10 @@ function Jobs() {
 
     return (
         <div>
-            <h1 className="page-title">💼 Jobs</h1>
+            <h1 className="page-title">
+                <FaBriefcase className="page-icon" />
+                Jobs
+            </h1>
 
             <div className="table-card">
                 <table className="data-table">

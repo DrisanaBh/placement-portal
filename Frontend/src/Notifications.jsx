@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { FaArrowLeftLong, FaBell } from "react-icons/fa6";
 
-function Notifications() {
+function Notifications({ onBack }) {
     const [notifications, setNotifications] =
         useState([]);
 
@@ -19,34 +20,57 @@ function Notifications() {
     }, []);
 
     return (
-        <div className="table-card">
-            <h2 style={{ padding: "20px" }}>
-                🔔 Notifications
-            </h2>
+        <>
+            <button
+                className="back-btn"
+                onClick={onBack}
+            >
+                <FaArrowLeftLong />
+                Dashboard
+            </button>
 
-            <table className="data-table">
-                <thead>
-                    <tr>
-                        <th>Message</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
+            <div className="table-card">
 
-                <tbody>
-                    {notifications.map((n) => (
-                        <tr key={n.notificationID}>
-                            <td>{n.message}</td>
+                <h2
+                    style={{
+                        padding: "20px",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "12px"
+                    }}
+                >
+                    <FaBell />
+                    Notifications
+                </h2>
 
-                            <td>
-                                {new Date(
-                                    n.createdDate
-                                ).toLocaleString()}
-                            </td>
+                <table className="data-table">
+
+                    <thead>
+                        <tr>
+                            <th>Message</th>
+                            <th>Date</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+
+                    <tbody>
+                        {notifications.map((n) => (
+                            <tr key={n.notificationID}>
+                                <td>{n.message}</td>
+
+                                <td>
+                                    {new Date(
+                                        n.createdDate
+                                    ).toLocaleString()}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+
+                </table>
+
+            </div>
+        </>
     );
 }
 

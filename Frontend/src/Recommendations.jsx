@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import {
+    FaLightbulb,
+} from "react-icons/fa6";
 
 function Recommendations() {
     const [students, setStudents] = useState([]);
@@ -21,7 +24,10 @@ function Recommendations() {
 
     return (
         <div>
-            <h1 className="page-title">🤖 Job Recommendations</h1>
+            <h1 className="page-title">
+                <FaLightbulb className="page-icon" />
+                Recommendations
+            </h1>
 
             <div className="recommendation-controls">
                 <label>Select Student:</label>

@@ -1,3 +1,4 @@
+import TopBar from "./components/TopBar";
 import Notifications from "./Notifications";
 import StudentApplications from "./StudentApplications";
 import StudentRecommendations from "./StudentRecommendations";
@@ -13,6 +14,17 @@ import Jobs from "./Jobs";
 import Students from "./Students";
 import { useEffect, useState } from "react";
 import "./App.css";
+import {
+    FaChartPie,
+    FaUserGraduate,
+    FaUserTie,
+    FaBriefcase,
+    FaFileCircleCheck,
+    FaAward,
+    FaLightbulb,
+    FaRightFromBracket,
+    FaAddressCard
+} from "react-icons/fa6";
 
 import {
     Chart as ChartJS,
@@ -56,6 +68,8 @@ function App() {
     const [jobs, setJobs] = useState(0);
     const [applications, setApplications] = useState(0);
     const [offers, setOffers] = useState(0);
+    const [notificationCount, setNotificationCount] =
+        useState(0);
     useEffect(() => {
         localStorage.setItem("currentPage", currentPage);
     }, [currentPage]);
@@ -79,7 +93,16 @@ function App() {
         fetch("http://localhost:5220/api/dashboard/offers/count")
             .then((res) => res.json())
             .then((data) => setOffers(data));
-    }, []);
+        if (user) {
+            fetch(
+                `http://localhost:5220/api/notifications/${user.userID}`
+            )
+                .then((res) => res.json())
+                .then((data) =>
+                    setNotificationCount(data.length)
+                );
+        }
+    }, [user, currentPage]);
 
     const chartData = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -87,15 +110,15 @@ function App() {
             {
                 label: "Applications",
                 data: [12, 19, 25, 30, 35, applications],
-                borderColor: "#6C63FF",
-                backgroundColor: "#6C63FF",
+                borderColor: "#4F7B78",
+                backgroundColor: "#4F7B78",
                 tension: 0.4,
             },
             {
                 label: "Offers",
                 data: [2, 4, 5, 5, 6, offers],
-                borderColor: "#00C896",
-                backgroundColor: "#00C896",
+                borderColor: "#97B3AD",
+                backgroundColor: "#97B3AD",
                 tension: 0.4,
             },
         ],
@@ -124,25 +147,47 @@ function App() {
         <div className="dashboard">
             <aside className="sidebar">
                 <div>
-                    <h2>🎓 Placement Portal</h2>
-                    <p>{user.fullName}</p>
-                    <p>{user.role}</p>
+                    <h2 className="sidebar-title">
+                        Placement Portal
+                    </h2>
 
-                    <ul>
+                    <div className="sidebar-profile">
+
+                        <div className="profile-avatar">
+                            {user.fullName.charAt(0)}
+                        </div>
+
+                        <div className="profile-details">
+                            <h3>{user.fullName}</h3>
+                            <p>
+                                {user.role === "Admin"
+                                    ? "System Administrator"
+                                    : user.role}
+                            </p>
+                        </div>
+
+                    </div>
+                    <ul className="sidebar-menu">
                         {user.role === "Faculty" ? (
                             <>
                                 <li
                                     className={currentPage === "faculty" ? "active" : ""}
                                     onClick={() => setCurrentPage("faculty")}
                                 >
-                                    👨‍🏫 Faculty Dashboard
+                                    <>
+                                        <FaChartPie />
+                                        <span>Dashboard</span>
+                                    </>
                                 </li>
 
                                 <li
                                     className={currentPage === "mentees" ? "active" : ""}
                                     onClick={() => setCurrentPage("mentees")}
                                 >
-                                    👥 Mentee Details
+                                    <>
+                                        <FaUserGraduate />
+                                        <span>Mentee Details</span>
+                                    </>
                                 </li>
                             </>
                         )  : user.role === "Student" ? (
@@ -157,7 +202,10 @@ function App() {
                                             setCurrentPage("studentprofile")
                                         }
                                     >
-                                        🎓 My Profile
+                                        <>
+                                            <FaAddressCard />
+                                            <span>My Profile</span>
+                                        </>
                                     </li>
                                     <li
                                         className={
@@ -169,7 +217,10 @@ function App() {
                                             setCurrentPage("studentapplications")
                                         }
                                     >
-                                        📝 My Applications
+                                        <>
+                                            <FaFileCircleCheck />
+                                            <span>My Applications</span>
+                                        </>
                                     </li>
 
                                     <li
@@ -184,19 +235,10 @@ function App() {
                                             )
                                         }
                                     >
-                                        💼 Job Recommendations
-                                    </li>
-                                    <li
-                                        className={
-                                            currentPage === "notifications"
-                                                ? "active"
-                                                : ""
-                                        }
-                                        onClick={() =>
-                                            setCurrentPage("notifications")
-                                        }
-                                    >
-                                        🔔 Notifications
+                                        <>
+                                            <FaLightbulb />
+                                            <span>Job Recommendations</span>
+                                        </>
                                     </li>
                                 </> ):(
                             <>
@@ -204,42 +246,60 @@ function App() {
                                     className={currentPage === "dashboard" ? "active" : ""}
                                     onClick={() => setCurrentPage("dashboard")}
                                 >
-                                    📊 Dashboard
+                                            <>
+                                                <FaChartPie />
+                                                <span>Dashboard</span>
+                                            </>
                                 </li>
 
                                 <li
                                     className={currentPage === "students" ? "active" : ""}
                                     onClick={() => setCurrentPage("students")}
                                 >
-                                    🎓 Students
+                                            <>
+                                                <FaUserGraduate />
+                                                <span>Students</span>
+                                            </>
                                 </li>
 
                                 <li
                                     className={currentPage === "faculty" ? "active" : ""}
                                     onClick={() => setCurrentPage("faculty")}
                                 >
-                                    👨‍🏫 Faculty
+                                            <>
+                                                <FaUserTie/>
+                                                <span>Faculty</span>
+                                            </>
                                 </li>
 
                                 <li
                                     className={currentPage === "jobs" ? "active" : ""}
                                     onClick={() => setCurrentPage("jobs")}
                                 >
-                                    💼 Jobs
+                                            <>
+                                                <FaBriefcase />
+                                                <span>Jobs</span>
+                                            </>
                                 </li>
 
                                 <li
                                     className={currentPage === "applications" ? "active" : ""}
                                     onClick={() => setCurrentPage("applications")}
                                 >
-                                    📝 Applications
+                                            <>
+                                                <FaFileCircleCheck />
+                                                <span>Applications</span>
+                                            </>
                                 </li>
 
                                 <li
                                     className={currentPage === "offers" ? "active" : ""}
                                     onClick={() => setCurrentPage("offers")}
                                 >
-                                    🏆 Offers
+                                            <>
+                                                <FaAward />
+                                                <span>Offers</span>
+                                            </>
                                 </li>
 
                                 <li
@@ -252,52 +312,50 @@ function App() {
                                         setCurrentPage("recommendations")
                                     }
                                 >
-                                    🤖 Recommendations
+                                            <>
+                                                <FaLightbulb />
+                                                <span>Recommendations</span>
+                                            </>
                                 </li>
                             </>
                         )}
 
-                        <button
-                            onClick={() => {
-                                localStorage.removeItem("user");
-                                localStorage.removeItem("currentPage");
-                                setUser(null);
-                            }}
-                        >
-                            Logout
-                        </button>
+                        
                     </ul>
-                </div>
-
-                {user.role !== "Student" && (
-                    <div className="sidebar-footer">
-                        <p>Active Students</p>
-                        <h3>{students}</h3>
-                    </div>
-                )}
+                    <button
+                        className="logout-btn"
+                        onClick={() => {
+                            localStorage.removeItem("user");
+                            localStorage.removeItem("currentPage");
+                            setUser(null);
+                        }}
+                    >
+                        
+                            <FaRightFromBracket />
+                            <span>Logout</span>
+                       
+                    </button>
+                </div> 
+                
             </aside>
 
             <main className="content">
 
                 {currentPage === "dashboard" && (
                     <>
-                        <div className="topbar">
-                            <div>
-                                <h3>Welcome Back, {user.fullName} 👋</h3>
-                            </div>
-
-                            <div className="topbar-right">
-                                <span>🔔 Notifications</span>
-                                <span>📅 June 2026</span>
-                                <span>👤 {user.fullName}</span>
-                            </div>
-                        </div>
+                        <TopBar
+                            user={user}
+                            notificationCount={notificationCount}
+                            onNotificationsClick={() =>
+                                setCurrentPage("notifications")
+                            }
+                        />
 
                         <div className="hero-card">
                             <div>
-                                <h1>Placement Analytics</h1>
+                                <h1>Dashboard Overview</h1>
                                 <p>
-                                    Track students, applications, jobs and offers in one place.
+                                    Monitor placements, applications and recruitment from one dashboard.
                                 </p>
                             </div>
 
@@ -314,25 +372,33 @@ function App() {
 
                         <div className="cards">
                             <div className="card students-card">
-                                <div className="card-icon">🎓</div>
+                                <div className="card-icon">
+                                    <FaUserGraduate />
+                                </div>
                                 <h2>{students}</h2>
                                 <p>Total Students</p>
                             </div>
 
                             <div className="card jobs-card">
-                                <div className="card-icon">💼</div>
+                                <div className="card-icon">
+                                    <FaBriefcase />
+                                </div>
                                 <h2>{jobs}</h2>
                                 <p>Total Jobs</p>
                             </div>
 
                             <div className="card applications-card">
-                                <div className="card-icon">📝</div>
+                                <div className="card-icon">
+                                    <FaFileCircleCheck />
+                                </div>
                                 <h2>{applications}</h2>
                                 <p>Total Applications</p>
                             </div>
 
                             <div className="card offers-card">
-                                <div className="card-icon">🏆</div>
+                                <div className="card-icon">
+                                    <FaAward />
+                                </div>
                                 <h2>{offers}</h2>
                                 <p>Total Offers</p>
                             </div>
@@ -340,7 +406,40 @@ function App() {
 
                         <div className="chart-card">
                             <h3>Placement Trends</h3>
-                            <Line data={chartData} />
+                            <Line
+                                data={chartData}
+                                options={{
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            labels: {
+                                                color: "#335D5A",
+                                                font: {
+                                                    size: 14
+                                                }
+                                            }
+                                        }
+                                    },
+                                    scales: {
+                                        x: {
+                                            grid: {
+                                                color: "#D0DDD8"
+                                            },
+                                            ticks: {
+                                                color: "#4F7B78"
+                                            }
+                                        },
+                                        y: {
+                                            grid: {
+                                                color: "#D0DDD8"
+                                            },
+                                            ticks: {
+                                                color: "#4F7B78"
+                                            }
+                                        }
+                                    }
+                                }}
+                            />
                         </div>
 
                         <div className="bottom-section">
@@ -400,7 +499,13 @@ function App() {
                 )}
                 {currentPage === "faculty" && (
                     user.role === "Faculty"
-                        ? <FacultyDashboard />
+                        ? (
+                            <FacultyDashboard
+                                openNotifications={() =>
+                                    setCurrentPage("notifications")
+                                }
+                            />
+                        )
                         : <Faculty />
                 )}
                 {currentPage === "mentees" && (
@@ -419,7 +524,11 @@ function App() {
                     <Recommendations />
                 )}
                 {currentPage === "studentprofile" && (
-                    <StudentProfile />
+                    <StudentProfile
+                        openNotifications={() =>
+                            setCurrentPage("notifications")
+                        }
+                    />
                 )}
                 {currentPage === "studentapplications" && (
                     <StudentApplications />
@@ -428,7 +537,17 @@ function App() {
                     <StudentRecommendations />
                 )}
                 {currentPage === "notifications" && (
-                    <Notifications />
+                    <Notifications
+                        onBack={() => {
+                            if (user.role === "Admin") {
+                                setCurrentPage("dashboard");
+                            } else if (user.role === "Faculty") {
+                                setCurrentPage("faculty");
+                            } else {
+                                setCurrentPage("studentprofile");
+                            }
+                        }}
+                    />
                 )}
 
             </main>

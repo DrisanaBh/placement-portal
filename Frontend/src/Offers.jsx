@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import {
+    FaAward,
+} from "react-icons/fa6";
 
 function Offers() {
     const [offers, setOffers] = useState([]);
@@ -18,8 +21,10 @@ function Offers() {
 
     return (
         <div>
-            <h1 className="page-title">🏆 Offers</h1>
-
+            <h1 className="page-title">
+                <FaAward className="page-icon" />
+                Offers
+            </h1>
             <div className="table-card">
                 <table className="data-table">
                     <thead>

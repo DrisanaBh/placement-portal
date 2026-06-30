@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import {
+    FaFileCircleCheck,
+} from "react-icons/fa6";
 
 function Applications() {
     const [applications, setApplications] = useState([]);
@@ -12,7 +15,10 @@ function Applications() {
 
     return (
         <div>
-            <h1 className="page-title">📝 Applications</h1>
+            <h1 className="page-title">
+                <FaFileCircleCheck className="page-icon" />
+                Applications
+            </h1>
 
             <div className="table-card">
                 <table className="data-table">

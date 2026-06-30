@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
+import TopBar from "./components/TopBar";
 
-function StudentProfile({ studentId, onBack }) {
+
+function StudentProfile({
+    studentId,
+    onBack,
+    openNotifications
+}) {
     const [student, setStudent] = useState(null);
     const [applications, setApplications] = useState([]);
     const [skills, setSkills] = useState([]);
@@ -8,6 +14,12 @@ function StudentProfile({ studentId, onBack }) {
     const [cgpa, setCgpa] = useState("");
     const [graduationYear, setGraduationYear] = useState("");
     const [message, setMessage] = useState("");
+    const [resume, setResume] = useState(null);
+    const [resumeFile, setResumeFile] =
+        useState(null);
+
+    const [resumeMessage, setResumeMessage] =
+        useState("");
 
     const [resolvedStudentId, setResolvedStudentId] =
         useState(studentId);
@@ -15,6 +27,8 @@ function StudentProfile({ studentId, onBack }) {
     const user = JSON.parse(
         localStorage.getItem("user")
     );
+    const isAdmin =
+        user?.role === "Admin";
 
     useEffect(() => {
         if (studentId) {
@@ -68,8 +82,21 @@ function StudentProfile({ studentId, onBack }) {
                             Number(resolvedStudentId)
                     )
                 )
-            );
+        );
+        fetch(
+            `http://localhost:5220/api/resume/${resolvedStudentId}`
+        )
+            .then((res) => {
+                if (!res.ok) return null;
+                return res.json();
+            })
+            .then((data) => {
+                if (data) {
+                    setResume(data);
+                }
+            });
     }, [resolvedStudentId]);
+    
 
     const saveProfile = async () => {
         const response = await fetch(
@@ -120,6 +147,48 @@ function StudentProfile({ studentId, onBack }) {
         setNewSkill("");
         loadSkills(resolvedStudentId);
     };
+    const uploadResume = async () => {
+        if (!resumeFile) {
+            alert("Please select a file");
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append(
+            "file",
+            resumeFile
+        );
+
+        const response = await fetch(
+            `http://localhost:5220/api/upload-resume?studentId=${resolvedStudentId}`,
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        if (response.ok) {
+            setResumeMessage(
+                "Resume uploaded successfully"
+            );
+
+            const updatedResume =
+                await fetch(
+                    `http://localhost:5220/api/resume/${resolvedStudentId}`
+                );
+
+            const data =
+                await updatedResume.json();
+
+            setResume(data);
+        }
+        else {
+            setResumeMessage(
+                "Upload failed"
+            );
+        }
+    };
 
     const deleteSkill = async (skillId) => {
         await fetch(
@@ -147,9 +216,11 @@ function StudentProfile({ studentId, onBack }) {
     return (
         <div>
             {!studentId && (
-                <h1>
-                    Welcome Back, {user.fullName} 👋
-                </h1>
+                <TopBar
+                    user={user}
+                    notificationCount={0}
+                    onNotificationsClick={openNotifications}
+                />
             )}
 
             {onBack && (
@@ -173,16 +244,18 @@ function StudentProfile({ studentId, onBack }) {
                     <div>
                         <strong>CGPA</strong>
 
-                        <input
-                            type="number"
-                            step="0.01"
-                            value={cgpa}
-                            onChange={(e) =>
-                                setCgpa(
-                                    e.target.value
-                                )
-                            }
-                        />
+                        {isAdmin ? (
+                            <input
+                                type="number"
+                                step="0.01"
+                                value={cgpa}
+                                onChange={(e) =>
+                                    setCgpa(e.target.value)
+                                }
+                            />
+                        ) : (
+                            <p>{cgpa}</p>
+                        )}
                     </div>
 
                     <div>
@@ -190,24 +263,29 @@ function StudentProfile({ studentId, onBack }) {
                             Graduation Year
                         </strong>
 
-                        <input
-                            type="number"
-                            value={graduationYear}
-                            onChange={(e) =>
-                                setGraduationYear(
-                                    e.target.value
-                                )
-                            }
-                        />
+                        {isAdmin ? (
+                            <input
+                                type="number"
+                                value={graduationYear}
+                                onChange={(e) =>
+                                    setGraduationYear(
+                                        e.target.value
+                                    )
+                                }
+                            />
+                        ) : (
+                            <p>{graduationYear}</p>
+                        )}
                     </div>
                 </div>
 
-                <button
-                    onClick={saveProfile}
-                    style={{ marginTop: "20px" }}
-                >
-                    Save Changes
-                </button>
+                {isAdmin && (
+                    <button
+                        onClick={saveProfile}
+                    >
+                        Save Changes
+                    </button>
+                )}
 
                 {message && <p>{message}</p>}
             </div>
@@ -229,6 +307,93 @@ function StudentProfile({ studentId, onBack }) {
                     <h2>{offers}</h2>
                     <p>Offers</p>
                 </div>
+            </div>
+            <div className="table-card">
+                <h2 style={{ padding: "20px" }}>
+                    Resume
+                </h2>
+
+                {resume ? (
+                    <div style={{ padding: "20px" }}>
+                        <p>
+                            <strong>File:</strong>{" "}
+                            {resume.fileName}
+                        </p>
+
+                        <p>
+                            <strong>Size:</strong>{" "}
+                            {resume.fileSizeKB} KB
+                        </p>
+
+                        <p>
+                            <strong>Uploaded:</strong>{" "}
+                            {new Date(
+                                resume.uploadDate
+                            ).toLocaleString()}
+                        </p>
+
+                        <a
+                            href={`http://localhost:5220/api/resume/download/${resolvedStudentId}`}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            <button
+                                style={{
+                                    marginTop: "10px"
+                                }}
+                            >
+                                📄 Download Resume
+                            </button>
+                        </a>
+                        <div style={{ marginTop: "15px" }}>
+                            <input
+                                type="file"
+                                accept=".pdf"
+                                onChange={(e) =>
+                                    setResumeFile(e.target.files[0])
+                                }
+                            />
+
+                            <button
+                                style={{
+                                    marginLeft: "10px"
+                                }}
+                                onClick={uploadResume}
+                            >
+                                Replace Resume
+                            </button>
+                        </div>
+
+                        {resumeMessage && (
+                            <p>{resumeMessage}</p>
+                        )}
+                    </div>
+                ) : (
+                    <div style={{ padding: "20px" }}>
+                        <p>No resume uploaded.</p>
+
+                        <input
+                            type="file"
+                            accept=".pdf"
+                            onChange={(e) =>
+                                setResumeFile(e.target.files[0])
+                            }
+                        />
+
+                        <button
+                            style={{
+                                marginLeft: "10px"
+                            }}
+                            onClick={uploadResume}
+                        >
+                            Upload Resume
+                        </button>
+
+                        {resumeMessage && (
+                            <p>{resumeMessage}</p>
+                        )}
+                    </div>
+                )}
             </div>
 
             <div className="table-card">

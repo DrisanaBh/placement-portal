@@ -1,7 +1,11 @@
 import StudentProfile from "./StudentProfile";
+import TopBar from "./components/TopBar";
 import { useEffect, useState } from "react";
+import { FaUserTie } from "react-icons/fa6";
 
-function FacultyDashboard() {
+function FacultyDashboard({
+    openNotifications
+}) {
     const user = JSON.parse(
         localStorage.getItem("user")
     );
@@ -75,12 +79,16 @@ function FacultyDashboard() {
     console.log(applications);
     return (
         <div>
-            <h1>
-                Welcome Back, {user.fullName} 👋
-            </h1>
 
-            <h2>
-                👨‍🏫 {dashboard.fullName}
+            <TopBar
+                user={user}
+                notificationCount={0}
+                onNotificationsClick={openNotifications}
+            />
+
+            <h2 className="faculty-title">
+                <FaUserTie className="faculty-icon" />
+                {dashboard.fullName}
             </h2>
 
             <h3>{dashboard.department}</h3>
@@ -157,8 +165,9 @@ function FacultyDashboard() {
                         <thead>
                             <tr>
                                 <th>Application ID</th>
-                                <th>Student ID</th>
-                                <th>Job ID</th>
+                                <th>Student</th>
+                                <th>Company</th>
+                                <th>Job</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
@@ -173,11 +182,13 @@ function FacultyDashboard() {
                                     </td>
 
                                     <td>
-                                        {app.studentID}
+                                        {app.fullName}
                                     </td>
-
                                     <td>
-                                        {app.jobID}
+                                        {app.companyName}
+                                    </td>
+                                    <td>
+                                        {app.jobTitle}
                                     </td>
 
                                     <td>

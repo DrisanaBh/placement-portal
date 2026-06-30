@@ -1,6 +1,7 @@
 import StudentProfile from "./StudentProfile";
 import { useEffect, useState } from "react";
 import "./Students.css";
+import { FaUsers } from "react-icons/fa6";
 
 function MenteeDetails() {
     const [students, setStudents] = useState([]);
@@ -30,7 +31,10 @@ function MenteeDetails() {
 
     return (
         <div className="students-page">
-            <h1>👥 Mentee Details</h1>
+            <h1 className="page-title">
+                <FaUsers className="page-icon" />
+                Mentee Details
+            </h1>
 
             <div className="students-table-container">
                 <table className="students-table">

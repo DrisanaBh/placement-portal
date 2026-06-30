@@ -1,6 +1,9 @@
 import FacultyProfile from "./FacultyProfile";
 import { useEffect, useState } from "react";
 import "./Students.css";
+import {
+    FaUserTie,
+} from "react-icons/fa6";
 
 function Faculty() {
     const [faculty, setFaculty] = useState([]);
@@ -33,7 +36,10 @@ function Faculty() {
 
     return (
         <div className="students-page">
-            <h1>👨‍🏫 Faculty</h1>
+            <h1 className="page-title">
+                <FaUserTie className="page-icon" />
+                Faculty
+            </h1>
 
             <div className="students-table-container">
                 <table className="students-table">

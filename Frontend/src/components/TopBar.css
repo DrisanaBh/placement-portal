@@ -1,0 +1,64 @@
+.topbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    padding: 20px 30px;
+    border-radius: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+}
+
+.topbar-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 55px;
+    width: 100%;
+}
+
+.topbar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border-radius: 14px;
+    background: #D0DDD8;
+    color: #335D5A;
+    font-size: 17px;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+    .topbar-item svg {
+        font-size: 18px;
+    }
+
+    .topbar-item:hover {
+        background: #97B3AD;
+    }
+
+    .topbar-item svg {
+        color: #4F7B78;
+        font-size: 20px;
+    }
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #335D5A;
+    color: white;
+    font-size: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.notification-link {
+    cursor: pointer;
+    position: relative;
+}
+
+

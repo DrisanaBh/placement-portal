@@ -1,6 +1,9 @@
 import StudentProfile from "./StudentProfile";
 import { useEffect, useState } from "react";
 import "./Students.css";
+import {
+    FaUserGraduate,
+} from "react-icons/fa6";
 
 function Students() {
     const [students, setStudents] = useState([]);
@@ -24,7 +27,10 @@ function Students() {
 
     return (
         <div className="students-page">
-            <h1>🎓 Students</h1>
+            <h1 className="page-title">
+                <FaUserGraduate className="page-icon" />
+                 Students
+            </h1>
 
             <div className="students-table-container">
                 <table className="students-table">

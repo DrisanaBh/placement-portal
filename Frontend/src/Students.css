@@ -3,15 +3,15 @@
 }
 
     .students-page h1 {
-        margin-bottom: 20px;
-        color: #1f2937;
+        margin-bottom: 28px;
+        color: #335D5A;
     }
 
 .students-table-container {
-    background: white;
-    border-radius: 20px;
+    background: #F7F9F8;
+    border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    box-shadow: 0 15px 35px rgba(51,93,90,.08);
 }
 
 .students-table {
@@ -20,17 +20,23 @@
 }
 
     .students-table th {
-        background: #4f46e5;
+        background: #4F7B78; /* Weathered Teal */
         color: white;
-        padding: 16px;
+        padding: 18px;
         text-align: left;
+        font-size: 18px;
+        font-weight: 600;
     }
 
     .students-table td {
-        padding: 16px;
-        border-bottom: 1px solid #eee;
+        padding: 16px 18px;
+        border-bottom: 1px solid #D0DDD8;
+    }
+
+    .students-table tr:nth-child(even) {
+        background: #F7F9F8;
     }
 
     .students-table tr:hover {
-        background: #f8fafc;
+        background: #DDE7E4;
     }
