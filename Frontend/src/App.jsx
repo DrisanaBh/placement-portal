@@ -76,6 +76,42 @@ function App() {
     const [user, setUser] = useState(
         JSON.parse(localStorage.getItem("user"))
     );
+    console.log(user);
+    const handleProfileUpload = async (e) => {
+        console.log("Upload started");
+
+        const file = e.target.files[0];
+
+        console.log(file);
+
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch(
+            `http://localhost:5220/api/upload-profile-image?userId=${user.userID}`,
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        console.log("Upload response:", response.status);
+
+        const updatedUser = await fetch(
+            `http://localhost:5220/api/user/${user.userID}`
+        ).then(r => r.json());
+
+        console.log(updatedUser);
+
+        localStorage.setItem(
+            "user",
+            JSON.stringify(updatedUser)
+        );
+
+        setUser(updatedUser);
+    };
 
     useEffect(() => {
         fetch("http://localhost:5220/api/dashboard/students/count")
@@ -95,14 +131,14 @@ function App() {
             .then((data) => setOffers(data));
         if (user) {
             fetch(
-                `http://localhost:5220/api/notifications/${user.userID}`
+                `http://localhost:5220/api/notifications/${user.userID}/count`
             )
                 .then((res) => res.json())
-                .then((data) =>
-                    setNotificationCount(data.length)
+                .then((count) =>
+                    setNotificationCount(count)
                 );
         }
-    }, [user, currentPage]);
+        }, [user, currentPage]);
 
     const chartData = {
         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -153,9 +189,30 @@ function App() {
 
                     <div className="sidebar-profile">
 
-                        <div className="profile-avatar">
-                            {user.fullName.charAt(0)}
-                        </div>
+                        <>
+                            <input
+                                type="file"
+                                id="profileUpload"
+                                accept="image/*"
+                                style={{ display: "none" }}
+                                onChange={handleProfileUpload}
+                            />
+
+                            <label
+                                htmlFor="profileUpload"
+                                className="profile-avatar"
+                            >
+                                {user.profileImage ? (
+                                    <img
+                                        src={`http://localhost:5220${user.profileImage}?t=${Date.now()}`}
+                                        alt="Profile"
+                                        className="profile-avatar-image"
+                                    />
+                                ) : (
+                                    user.fullName.charAt(0)
+                                )}
+                            </label>
+                        </>
 
                         <div className="profile-details">
                             <h3>{user.fullName}</h3>
@@ -539,6 +596,8 @@ function App() {
                 {currentPage === "notifications" && (
                     <Notifications
                         onBack={() => {
+                            setNotificationCount(0);
+
                             if (user.role === "Admin") {
                                 setCurrentPage("dashboard");
                             } else if (user.role === "Faculty") {

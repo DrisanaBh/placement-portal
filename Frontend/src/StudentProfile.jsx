@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
 import TopBar from "./components/TopBar";
+import {
+    FaBuilding,
+    FaChartLine,
+    FaUserTie,
+    FaGraduationCap,
+    FaPenToSquare,
+    FaFileLines,
+    FaUsers,
+    FaBriefcase
+} from "react-icons/fa6";
 
 
 function StudentProfile({
@@ -20,6 +30,7 @@ function StudentProfile({
 
     const [resumeMessage, setResumeMessage] =
         useState("");
+    const [editing, setEditing] = useState(false);
 
     const [resolvedStudentId, setResolvedStudentId] =
         useState(studentId);
@@ -233,225 +244,331 @@ function StudentProfile({
             )}
 
             <div className="profile-card">
-                <h1>{student.fullName}</h1>
 
-                <div className="profile-info">
-                    <div>
-                        <strong>Department</strong>
-                        <p>{student.department}</p>
-                    </div>
+    <div className="profile-header">
 
-                    <div>
-                        <strong>CGPA</strong>
+        <h2>My Profile Overview</h2>
 
-                        {isAdmin ? (
-                            <input
-                                type="number"
-                                step="0.01"
-                                value={cgpa}
-                                onChange={(e) =>
-                                    setCgpa(e.target.value)
-                                }
-                            />
-                        ) : (
+        <button
+            className="edit-profile-btn"
+            onClick={() => setEditing(!editing)}
+        >
+            <FaPenToSquare />
+            <span>
+                {editing ? "Done" : "Edit Profile"}
+            </span>
+        </button>
+
+    </div>
+
+    <div className="profile-summary">
+
+        <div className="summary-item">
+
+    <div className="summary-icon">
+        <FaBuilding />
+    </div>
+
+    <div className="summary-content">
+        <h4>Department</h4>
+        <p>{student.department}</p>
+    </div>
+
+</div>
+
+        <div className="summary-item">
+
+            <div className="summary-icon">
+                <FaChartLine />
+            </div>
+
+                        <div className="summary-content">
+                            <h4>CGPA</h4>
                             <p>{cgpa}</p>
-                        )}
-                    </div>
-
-                    <div>
-                        <strong>
-                            Graduation Year
-                        </strong>
-
-                        {isAdmin ? (
-                            <input
-                                type="number"
-                                value={graduationYear}
-                                onChange={(e) =>
-                                    setGraduationYear(
-                                        e.target.value
-                                    )
-                                }
-                            />
-                        ) : (
-                            <p>{graduationYear}</p>
-                        )}
-                    </div>
-                </div>
-
-                {isAdmin && (
-                    <button
-                        onClick={saveProfile}
-                    >
-                        Save Changes
-                    </button>
-                )}
-
-                {message && <p>{message}</p>}
-            </div>
-
-            <div className="cards">
-                <div className="card students-card">
-                    <h2>
-                        {applications.length}
-                    </h2>
-                    <p>Applications</p>
-                </div>
-
-                <div className="card applications-card">
-                    <h2>{interviews}</h2>
-                    <p>Interviews</p>
-                </div>
-
-                <div className="card offers-card">
-                    <h2>{offers}</h2>
-                    <p>Offers</p>
-                </div>
-            </div>
-            <div className="table-card">
-                <h2 style={{ padding: "20px" }}>
-                    Resume
-                </h2>
-
-                {resume ? (
-                    <div style={{ padding: "20px" }}>
-                        <p>
-                            <strong>File:</strong>{" "}
-                            {resume.fileName}
-                        </p>
-
-                        <p>
-                            <strong>Size:</strong>{" "}
-                            {resume.fileSizeKB} KB
-                        </p>
-
-                        <p>
-                            <strong>Uploaded:</strong>{" "}
-                            {new Date(
-                                resume.uploadDate
-                            ).toLocaleString()}
-                        </p>
-
-                        <a
-                            href={`http://localhost:5220/api/resume/download/${resolvedStudentId}`}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            <button
-                                style={{
-                                    marginTop: "10px"
-                                }}
-                            >
-                                📄 Download Resume
-                            </button>
-                        </a>
-                        <div style={{ marginTop: "15px" }}>
-                            <input
-                                type="file"
-                                accept=".pdf"
-                                onChange={(e) =>
-                                    setResumeFile(e.target.files[0])
-                                }
-                            />
-
-                            <button
-                                style={{
-                                    marginLeft: "10px"
-                                }}
-                                onClick={uploadResume}
-                            >
-                                Replace Resume
-                            </button>
                         </div>
 
-                        {resumeMessage && (
-                            <p>{resumeMessage}</p>
-                        )}
-                    </div>
-                ) : (
-                    <div style={{ padding: "20px" }}>
-                        <p>No resume uploaded.</p>
+        </div>
 
-                        <input
-                            type="file"
-                            accept=".pdf"
-                            onChange={(e) =>
-                                setResumeFile(e.target.files[0])
-                            }
-                        />
+        <div className="summary-item">
 
-                        <button
-                            style={{
-                                marginLeft: "10px"
-                            }}
-                            onClick={uploadResume}
-                        >
-                            Upload Resume
-                        </button>
-
-                        {resumeMessage && (
-                            <p>{resumeMessage}</p>
-                        )}
-                    </div>
-                )}
+            <div className="summary-icon">
+                <FaUserTie />
             </div>
 
-            <div className="table-card">
-                <h2 style={{ padding: "20px" }}>
-                    Skills
-                </h2>
+                        <div className="summary-content">
+                            <h4>Mentor</h4>
+                            <p>
+                                {student.facultyName || "Not Assigned"}
+                            </p>
+                        </div>
 
-                <div style={{ padding: "20px" }}>
-                    <input
-                        type="text"
-                        placeholder="Add a skill"
-                        value={newSkill}
-                        onChange={(e) =>
-                            setNewSkill(
-                                e.target.value
-                            )
-                        }
-                    />
+        </div>
 
-                    <button
-                        style={{
-                            marginLeft: "10px"
-                        }}
-                        onClick={addSkill}
-                    >
-                        Add Skill
-                    </button>
+        <div className="summary-item">
+
+            <div className="summary-icon">
+                <FaGraduationCap />
+            </div>
+
+                        <div className="summary-content">
+                            <h4>Graduation Year</h4>
+                            <p>{graduationYear}</p>
+                        </div>
+
+        </div>
+
+    </div>
+
+</div>
+            <div className="stats-grid">
+
+                <div className="dashboard-card">
+
+                    <div className="card-top">
+
+                        <div className="card-icon">
+                            <FaFileLines />
+                        </div>
+
+                        <div className="card-value">
+                            <h2>{applications.length}</h2>
+                            <span>Applications</span>
+                        </div>
+
+                    </div>
+
+                    <p className="card-footer">
+                        Total jobs you applied
+                    </p>
+
                 </div>
 
-                <ul>
-                    {skills.map((skill) => (
-                        <li
-                            key={skill.skillID}
-                            style={{
-                                padding:
-                                    "10px 20px"
-                            }}
-                        >
-                            {skill.skillName}
 
-                            <button
-                                style={{
-                                    marginLeft:
-                                        "10px"
-                                }}
-                                onClick={() =>
-                                    deleteSkill(
-                                        skill.skillID
-                                    )
-                                }
-                            >
-                                Delete
-                            </button>
-                        </li>
-                    ))}
-                </ul>
+                <div className="dashboard-card">
+
+                    <div className="card-top">
+
+                        <div className="card-icon">
+                            <FaUsers />
+                        </div>
+
+                        <div className="card-value">
+                            <h2>{interviews}</h2>
+                            <span>Interviews</span>
+                        </div>
+
+                    </div>
+
+                    <p className="card-footer">
+                        Interviews scheduled
+                    </p>
+
+                </div>
+
+
+                <div className="dashboard-card offer-card">
+
+                    <div className="card-top">
+
+                        <div className="card-icon">
+                            <FaBriefcase />
+                        </div>
+
+                        <div className="card-value">
+                            <h2>{offers}</h2>
+                            <span>Offers</span>
+                        </div>
+
+                    </div>
+
+                    <p className="card-footer">
+                        Offers received
+                    </p>
+
+                </div>
+
             </div>
+            {editing && (
 
+                <div className="edit-panel">
+
+                    <div className="edit-panel-header">
+
+                        <h2>Edit Profile</h2>
+
+                        <button
+                            className="close-edit-btn"
+                            onClick={() => setEditing(false)}
+                        >
+                            ✕
+                        </button>
+
+                    </div>
+
+                    <div className="edit-tabs">
+
+                        <button className="active-tab">
+                            Resume
+                        </button>
+
+                        <button>
+                            Skills
+                        </button>
+
+                    </div>
+
+                    <div className="edit-panel-content">
+
+                        <div className="resume-card">
+
+                            <h3>Resume</h3>
+
+                            {resume ? (
+
+                                <>
+
+                                    <p>
+                                        <strong>File:</strong> {resume.fileName}
+                                    </p>
+
+                                    <p>
+                                        <strong>Size:</strong> {resume.fileSizeKB} KB
+                                    </p>
+
+                                    <p>
+                                        <strong>Uploaded:</strong>{" "}
+                                        {new Date(
+                                            resume.uploadDate
+                                        ).toLocaleString()}
+                                    </p>
+
+                                    <div className="resume-buttons">
+
+                                        <a
+                                            href={`http://localhost:5220/api/resume/download/${resolvedStudentId}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                        >
+                                            <button>
+                                                Download Resume
+                                            </button>
+                                        </a>
+
+                                        <input
+                                            type="file"
+                                            accept=".pdf"
+                                            onChange={(e) =>
+                                                setResumeFile(
+                                                    e.target.files[0]
+                                                )
+                                            }
+                                        />
+
+                                        <button
+                                            onClick={uploadResume}
+                                        >
+                                            Replace Resume
+                                        </button>
+
+                                    </div>
+
+                                </>
+
+                            ) : (
+
+                                <>
+
+                                    <p>
+                                        No resume uploaded.
+                                    </p>
+
+                                    <input
+                                        type="file"
+                                        accept=".pdf"
+                                        onChange={(e) =>
+                                            setResumeFile(
+                                                e.target.files[0]
+                                            )
+                                        }
+                                    />
+
+                                    <button
+                                        onClick={uploadResume}
+                                    >
+                                        Upload Resume
+                                    </button>
+
+                                </>
+
+                            )}
+
+                            {resumeMessage && (
+                                <p>{resumeMessage}</p>
+                            )}
+
+                        </div>
+
+                        <div className="skills-card">
+
+                            <h3>Skills</h3>
+
+                            <div className="skill-input-row">
+
+                                <input
+                                    type="text"
+                                    value={newSkill}
+                                    placeholder="Add a skill"
+                                    onChange={(e) =>
+                                        setNewSkill(
+                                            e.target.value
+                                        )
+                                    }
+                                />
+
+                                <button
+                                    onClick={addSkill}
+                                >
+                                    Add Skill
+                                </button>
+
+                            </div>
+
+                            <div className="skills-list">
+
+                                {skills.map((skill) => (
+
+                                    <div
+                                        className="skill-chip"
+                                        key={skill.skillID}
+                                    >
+
+                                        <span>
+                                            {skill.skillName}
+                                        </span>
+
+                                        <button
+                                            onClick={() =>
+                                                deleteSkill(
+                                                    skill.skillID
+                                                )
+                                            }
+                                        >
+                                            ✕
+                                        </button>
+
+                                    </div>
+
+                                ))}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            )}
             {studentId && (
                 <div className="table-card">
                     <h2

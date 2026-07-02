@@ -12,6 +12,7 @@ function TopBar({
     notificationCount = 0,
     onNotificationsClick
 }) {
+    console.log(notificationCount);
     return (
         <div className="topbar">
             

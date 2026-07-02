@@ -107,6 +107,13 @@ body {
     margin-bottom: 16px;
     box-shadow: 0 10px 25px rgba(0,0,0,.15);
 }
+.profile-avatar-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
 
 .profile-details h3 {
     font-size: 22px;
@@ -202,24 +209,7 @@ body {
    KPI CARDS
 ========================= */
 
-.cards {
-    display: grid;
-    grid-template-columns: repeat(4,1fr);
-    gap: 22px;
-    margin-top: 28px;
-}
 
-.card {
-    border-radius: 24px;
-    padding: 28px 24px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 190px;
-    color: #fff;
-    box-shadow: 0 14px 35px rgba(0,0,0,.08);
-    transition: .25s;
-}
 
     .card:hover {
         transform: translateY(-6px);
@@ -338,9 +328,7 @@ body {
 ========================= */
 
 @media (max-width: 1100px) {
-    .cards {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    
 }
 
 @media (max-width: 800px) {
@@ -353,9 +341,7 @@ body {
         width: 100%;
     }
 
-    .cards {
-        grid-template-columns: 1fr;
-    }
+   
 
     .bottom-section {
         grid-template-columns: 1fr;
@@ -606,3 +592,299 @@ body {
     color: #4F7B78;
     font-size: 52px;
 }
+/* ======================================
+   STUDENT PROFILE REDESIGN
+====================================== */
+
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 35px;
+}
+.profile-summary {
+    display: grid;
+    grid-template-columns: repeat(2,minmax(320px,1fr));
+    column-gap: 70px;
+    row-gap: 34px;
+}
+
+.profile-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(260px, 1fr));
+    column-gap: 60px;
+    row-gap: 34px;
+    margin-top: 32px;
+}
+
+.summary-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+}
+
+.summary-icon {
+    width: 88px;
+    height: 88px;
+    border-radius: 22px;
+    background: #DDE7E4;
+    color: #335D5A;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 34px;
+    flex-shrink: 0;
+}
+
+.summary-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex: 1;
+}
+
+.summary-item h4 {
+    margin: 0;
+    color: #4F7B78;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.summary-item p {
+    margin: 8px 0 0;
+    color: #2B3937;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.edit-profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #335D5A;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 22px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+    .edit-profile-btn:hover {
+        background: #4F7B78;
+    }
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 28px;
+    margin: 32px 0;
+}
+.dashboard-card {
+    background: #ffffff;
+    border-radius: 28px;
+    padding: 28px;
+    min-height: 185px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 12px 30px rgba(0,0,0,.08);
+}
+.offer-card {
+    background: #335D5A;
+    color: white;
+}
+.card-top {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+.card-icon {
+    width: 88px;
+    height: 88px;
+    border-radius: 22px;
+    background: #EEF4F2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 38px;
+    color: #335D5A;
+}
+.offer-card .card-icon {
+    background: white;
+}
+.card-value {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+    .card-value h2 {
+        margin: 0;
+        font-size: 56px;
+        font-weight: 700;
+    }
+    .card-value span {
+        margin-top: 6px;
+        font-size: 26px;
+        font-weight: 500;
+    }
+.card-footer {
+    font-size: 17px;
+    color: #687775;
+}
+.offer-card .card-footer {
+    color: white;
+}
+.dashboard-cards {
+    margin-bottom: 36px;
+}
+/* ================= EDIT PROFILE ================= */
+
+.edit-panel {
+    background: #ffffff;
+    border-radius: 30px;
+    padding: 32px;
+    margin-top: 36px;
+    box-shadow: 0 18px 45px rgba(0,0,0,.08);
+}
+
+.edit-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+}
+
+    .edit-panel-header h2 {
+        margin: 0;
+        color: #335D5A;
+        font-size: 32px;
+    }
+
+.close-edit-btn {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    background: #EDF4F2;
+    font-size: 20px;
+    transition: .25s;
+}
+
+    .close-edit-btn:hover {
+        background: #335D5A;
+        color: white;
+    }
+
+.edit-tabs {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #d8e3df;
+}
+
+    .edit-tabs button {
+        background: none;
+        border: none;
+        padding: 14px 8px;
+        font-size: 17px;
+        cursor: pointer;
+        color: #667;
+        font-weight: 600;
+    }
+
+.active-tab {
+    color: #335D5A !important;
+    border-bottom: 3px solid #335D5A;
+}
+
+.edit-panel-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+}
+
+.resume-card,
+.skills-card {
+    background: #F7FAF8;
+    border-radius: 22px;
+    padding: 24px;
+}
+
+    .resume-card h3,
+    .skills-card h3 {
+        margin-top: 0;
+        color: #335D5A;
+    }
+
+.resume-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+    .resume-buttons button {
+        background: #335D5A;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+        .resume-buttons button:hover {
+            background: #244846;
+        }
+
+.skill-input-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+    .skill-input-row input {
+        flex: 1;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #d8d8d8;
+        font-size: 15px;
+    }
+
+    .skill-input-row button {
+        background: #335D5A;
+        color: white;
+        border: none;
+        padding: 0 20px;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+.skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.skill-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #EDF4F2;
+    border-radius: 30px;
+    padding: 10px 16px;
+}
+
+    .skill-chip button {
+        border: none;
+        background: none;
+        color: #d33;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+    }
